@@ -1,3 +1,4 @@
+import React from "react";
 import styled from "@emotion/styled";
 import { FaGithub as GithubIcon } from "react-icons/fa";
 

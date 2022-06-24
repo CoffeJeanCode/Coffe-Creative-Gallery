@@ -1,5 +1,5 @@
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
-import { useEffect, useState } from "react";
 import SketchItem from "../SketchObject";
 
 const SketchModal = ({ Sketch, isOpen, toggleModal }) => {
