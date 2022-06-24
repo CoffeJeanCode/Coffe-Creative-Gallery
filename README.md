@@ -2,7 +2,7 @@
 
 ![Screenshot of website](github/screenshot.png)
 
-## Creative coding gallery in P5js
+## Creative coding gallery with P5js
 
 ### Main Techs
 
