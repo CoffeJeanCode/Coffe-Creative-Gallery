@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from "react";
 import styled from "@emotion/styled";
 import p5 from "p5";
+import { useEffect, useRef } from "react";
 
 const SketchObject = ({ sketch, size }) => {
   const parentRef = useRef();

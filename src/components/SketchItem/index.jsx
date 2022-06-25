@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import React, { useState } from "react";
+import { useState } from "react";
 import SketchModal from "../SketchModal";
 import SketchObject from "../SketchObject";
 

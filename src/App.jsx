@@ -1,11 +1,25 @@
-import React from "react";
 import { css, Global } from "@emotion/react";
 import styled from "@emotion/styled";
 import normalize from "normalize.css";
+import { useEffect } from "react";
 import Nav from "./components/Nav";
 import SketchGallery from "./components/SketchGallery";
+import { metaData } from "./seo";
 
 function App() {
+  useEffect(() => {
+    metaData.forEach((info) => {
+      const meta = document.createElement("meta");
+
+      if (info.name) meta.setAttribute("name", info.name);
+      if (info.property) meta.setAttribute("property", info.property);
+
+      meta.content = info["content"];
+
+      document.head.append(meta);
+    });
+  }, []);
+
   return (
     <AppContainerStyled>
       <Global

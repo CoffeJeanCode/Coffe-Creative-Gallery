@@ -1,6 +1,5 @@
-import { MdClose as CloseIcon } from "react-icons/md";
-import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
+import { MdClose as CloseIcon } from "react-icons/md";
 import SketchItem from "../SketchObject";
 
 const SketchModal = ({ sketch, isOpen, toggleModal }) => {
