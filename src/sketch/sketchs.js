@@ -3,10 +3,10 @@ import SketchBase from "./sketchBase";
 export const Sketch1 = new SketchBase(
   "Matrix Lines",
   "Matrix Lines in X an Y to mouse position",
-  (p) => {
+  (size) => (p) => {
     let canvas;
     p.setup = () => {
-      canvas = p.createCanvas(300, 300);
+      canvas = p.createCanvas(size.width, size.height);
       canvas.mouseOver(() => p.loop());
       canvas.mouseOut(() => p.noLoop());
     };
@@ -29,12 +29,12 @@ export const Sketch1 = new SketchBase(
 export const Sketch2 = new SketchBase(
   "Curve Lines",
   "Matrix Lines in X an Y to mouse position",
-  (p) => {
+  (size) => (p) => {
     const path = [];
     let canvas;
 
     p.setup = () => {
-      canvas = p.createCanvas(300, 300);
+      canvas = p.createCanvas(size.width, size.height);
       canvas.mouseOver(() => p.loop());
       canvas.mouseOut(() => p.noLoop());
     };
@@ -54,11 +54,11 @@ export const Sketch2 = new SketchBase(
   }
 );
 
-export const Sketch3 = new SketchBase("Color Squares", "", (p) => {
+export const Sketch3 = new SketchBase("Color Squares", "", (size) => (p) => {
   let canvas;
 
   p.setup = () => {
-    canvas = p.createCanvas(300, 300);
+    canvas = p.createCanvas(size.width, size.height);
     canvas.mouseOver(() => p.loop());
     canvas.mouseOut(() => p.noLoop());
     p.colorMode("hsb", 360, 100, 100);
@@ -77,13 +77,13 @@ export const Sketch3 = new SketchBase("Color Squares", "", (p) => {
   };
 });
 
-export const Sketch4 = new SketchBase("Kaleiospe", "", (p) => {
+export const Sketch4 = new SketchBase("Kaleiospe", "", (size) => (p) => {
   let symetry = 12;
   let angle = 360 / symetry;
   let canvas;
 
   p.setup = () => {
-    canvas = p.createCanvas(300, 300);
+    canvas = p.createCanvas(size.width, size.height);
     canvas.mouseOver(() => p.loop());
     canvas.mouseOut(() => p.noLoop());
     p.angleMode(p.DEGREES);
@@ -120,53 +120,57 @@ export const Sketch4 = new SketchBase("Kaleiospe", "", (p) => {
   };
 });
 
-export const Sketch5 = new SketchBase("Terrain Generator", "", (p) => {
-  let cols, rows;
-  let scl = 40;
-  let w = 1400;
-  let h = 1000;
+export const Sketch5 = new SketchBase(
+  "Terrain Generator",
+  "",
+  (size) => (p) => {
+    let cols, rows;
+    let scl = 40;
+    let w = 1400;
+    let h = 1000;
 
-  let flying = 0;
+    let flying = 0;
 
-  let terrain = [];
+    let terrain = [];
 
-  p.setup = () => {
-    p.createCanvas(300, 300, p.WEBGL);
-    cols = w / scl;
-    rows = h / scl;
+    p.setup = () => {
+      p.createCanvas(size.width, size.height, p.WEBGL);
+      cols = w / scl;
+      rows = h / scl;
 
-    for (let x = 0; x < cols; x++) {
-      terrain[x] = [];
+      for (let x = 0; x < cols; x++) {
+        terrain[x] = [];
+        for (let y = 0; y < rows; y++) {
+          terrain[x][y] = 0; //specify a default value for now
+        }
+      }
+    };
+
+    p.draw = () => {
+      flying -= 0.1;
+      let yoff = flying;
       for (let y = 0; y < rows; y++) {
-        terrain[x][y] = 0; //specify a default value for now
+        let xoff = 0;
+        for (let x = 0; x < cols; x++) {
+          terrain[x][y] = p.map(p.noise(xoff, yoff), 0, 1, -100, 100);
+          xoff += 0.2;
+        }
+        yoff += 0.2;
       }
-    }
-  };
 
-  p.draw = () => {
-    flying -= 0.1;
-    let yoff = flying;
-    for (let y = 0; y < rows; y++) {
-      let xoff = 0;
-      for (let x = 0; x < cols; x++) {
-        terrain[x][y] = p.map(p.noise(xoff, yoff), 0, 1, -100, 100);
-        xoff += 0.2;
+      p.background(0);
+      p.translate(0, 50);
+      p.rotateX(p.PI / 3);
+      p.fill(200, 200, 200);
+      p.translate(-w / 2, -h / 2);
+      for (let y = 0; y < rows - 1; y++) {
+        p.beginShape(p.TRIANGLE_STRIP);
+        for (let x = 0; x < cols; x++) {
+          p.vertex(x * scl, y * scl, terrain[x][y]);
+          p.vertex(x * scl, (y + 1) * scl, terrain[x][y + 1]);
+        }
+        p.endShape();
       }
-      yoff += 0.2;
-    }
-
-    p.background(0);
-    p.translate(0, 50);
-    p.rotateX(p.PI / 3);
-    p.fill(200, 200, 200);
-    p.translate(-w / 2, -h / 2);
-    for (let y = 0; y < rows - 1; y++) {
-      p.beginShape(p.TRIANGLE_STRIP);
-      for (let x = 0; x < cols; x++) {
-        p.vertex(x * scl, y * scl, terrain[x][y]);
-        p.vertex(x * scl, (y + 1) * scl, terrain[x][y + 1]);
-      }
-      p.endShape();
-    }
-  };
-});
+    };
+  }
+);
