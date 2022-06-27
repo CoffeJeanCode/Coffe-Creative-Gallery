@@ -12,6 +12,7 @@ const SketchGallery = () => {
             key={idx}
             sketch={sketch}
             size={{ width: 300, height: 300 }}
+            interaction={sketch.interaction}
           />
         ))}
       </SketchListStyled>

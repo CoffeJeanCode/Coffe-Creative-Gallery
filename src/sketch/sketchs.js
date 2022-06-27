@@ -1,8 +1,12 @@
-import SketchBase from "./sketchBase";
+import SketchBase, {
+  interactionMove,
+  interactionPressed,
+  nonInteraction,
+} from "./sketchBase";
 
 export const Sketch1 = new SketchBase(
   "Matrix Lines",
-  "Matrix Lines in X an Y to mouse position",
+  interactionMove,
   (size) => (p) => {
     let canvas;
     p.setup = () => {
@@ -28,7 +32,7 @@ export const Sketch1 = new SketchBase(
 
 export const Sketch2 = new SketchBase(
   "Curve Lines",
-  "Matrix Lines in X an Y to mouse position",
+  interactionPressed,
   (size) => (p) => {
     const path = [];
     let canvas;
@@ -54,75 +58,83 @@ export const Sketch2 = new SketchBase(
   }
 );
 
-export const Sketch3 = new SketchBase("Color Squares", "", (size) => (p) => {
-  let canvas;
+export const Sketch3 = new SketchBase(
+  "Color Squares",
+  interactionMove,
+  (size) => (p) => {
+    let canvas;
 
-  p.setup = () => {
-    canvas = p.createCanvas(size.width, size.height);
-    canvas.mouseOver(() => p.loop());
-    canvas.mouseOut(() => p.noLoop());
-    p.colorMode("hsb", 360, 100, 100);
-  };
+    p.setup = () => {
+      canvas = p.createCanvas(size.width, size.height);
+      canvas.mouseOver(() => p.loop());
+      canvas.mouseOut(() => p.noLoop());
+      p.colorMode("hsb", 360, 100, 100);
+    };
 
-  p.draw = () => {
-    p.background(0);
-    for (let x = 20; x <= p.width; x += p.width / 5) {
-      for (let y = 20; y <= p.height; y += p.height / 5) {
-        p.noFill();
-        p.noStroke();
-        p.fill(p.mouseX + p.mouseY, 100, 100);
-        p.square(x, y, 20);
+    p.draw = () => {
+      p.background(0);
+      for (let x = 20; x <= p.width; x += p.width / 5) {
+        for (let y = 20; y <= p.height; y += p.height / 5) {
+          p.noFill();
+          p.noStroke();
+          p.fill(p.mouseX + p.mouseY, 100, 100);
+          p.square(x, y, 20);
+        }
       }
-    }
-  };
-});
+    };
+  }
+);
 
-export const Sketch4 = new SketchBase("Kaleiospe", "", (size) => (p) => {
-  let symetry = 12;
-  let angle = 360 / symetry;
-  let canvas;
+export const Sketch4 = new SketchBase(
+  "Kaleiospe",
+  interactionPressed,
+  (size) => (p) => {
+    let symetry = 12;
+    let angle = 360 / symetry;
+    let canvas;
 
-  p.setup = () => {
-    canvas = p.createCanvas(size.width, size.height);
-    canvas.mouseOver(() => p.loop());
-    canvas.mouseOut(() => p.noLoop());
-    p.angleMode(p.DEGREES);
-    p.background(0);
-    p.translate(p.width / 2, p.height / 2);
-    p.stroke(255);
-
-    for (let i = 0; i < symetry; i++) {
-      p.rotate(angle);
-      p.line(0, 0, p.width, 0);
-    }
-  };
-
-  p.draw = () => {
-    let mx = p.mouseX - p.width / 2;
-    let my = p.mouseY - p.height / 2;
-    let pmx = p.pmouseX - p.width / 2;
-    let pmy = p.pmouseY - p.height / 2;
-
-    p.translate(p.width / 2, p.height / 2);
-
-    if (p.mouseIsPressed) {
+    p.setup = () => {
+      canvas = p.createCanvas(size.width, size.height);
+      canvas.mouseOver(() => p.loop());
+      canvas.mouseOut(() => p.noLoop());
+      p.angleMode(p.DEGREES);
+      p.background(0);
+      p.translate(p.width / 2, p.height / 2);
       p.stroke(255);
 
       for (let i = 0; i < symetry; i++) {
         p.rotate(angle);
-        let d = p.dist(mx, my, pmx, pmy),
-          sw = p.map(d, 0, 10, 10, 1);
-
-        p.strokeWeight(sw);
-        p.line(mx, my, pmx, pmy);
+        p.line(0, 0, p.width, 0);
       }
-    }
-  };
-});
+    };
+
+    p.draw = () => {
+      let mx = p.mouseX - p.width / 2;
+      let my = p.mouseY - p.height / 2;
+      let pmx = p.pmouseX - p.width / 2;
+      let pmy = p.pmouseY - p.height / 2;
+
+      p.translate(p.width / 2, p.height / 2);
+
+      if (p.mouseIsPressed) {
+        p.stroke(255);
+
+        for (let i = 0; i < symetry; i++) {
+          p.rotate(angle);
+          let d = p.dist(mx, my, pmx, pmy),
+            sw = p.map(d, 0, 10, 10, 1);
+
+          p.strokeWeight(sw);
+          p.line(mx, my, pmx, pmy);
+        }
+      }
+    };
+  }
+);
 
 export const Sketch5 = new SketchBase(
   "Terrain Generator",
-  "",
+  nonInteraction,
   (size) => (p) => {
     let cols, rows;
     let scl = 40;
@@ -175,54 +187,58 @@ export const Sketch5 = new SketchBase(
   }
 );
 
-export const Sketch6 = new SketchBase("Follow Cursor", "", (size) => (p) => {
-  const GAP = 12;
-  const lineLength = 12;
-  let canvas;
-  p.setup = () => {
-    canvas = p.createCanvas(size.width, size.height);
-    canvas.mouseOver(() => p.loop());
-    canvas.mouseOut(() => p.noLoop());
-  };
+export const Sketch6 = new SketchBase(
+  "Follow Cursor",
+  interactionMove,
+  (size) => (p) => {
+    const GAP = 12;
+    const lineLength = 12;
+    let canvas;
+    p.setup = () => {
+      canvas = p.createCanvas(size.width, size.height);
+      canvas.mouseOver(() => p.loop());
+      canvas.mouseOut(() => p.noLoop());
+    };
 
-  p.draw = () => {
-    p.clear();
-    p.background(0);
+    p.draw = () => {
+      p.clear();
+      p.background(0);
 
-    p.strokeWeight(3);
-    p.stroke(255);
-    p.strokeCap("round");
+      p.strokeWeight(3);
+      p.stroke(255);
+      p.strokeCap("round");
 
-    const radius = lineLength * 0.7;
-    const horizontalGap = lineLength + GAP;
-    const verticalGap = lineLength + GAP;
+      const radius = lineLength * 0.7;
+      const horizontalGap = lineLength + GAP;
+      const verticalGap = lineLength + GAP;
 
-    for (let rows = 0; rows < p.width / 15; rows++) {
-      for (let cols = 0; cols < p.height / 15; cols++) {
-        const centerX = rows * horizontalGap + horizontalGap;
-        const centerY = cols * verticalGap + verticalGap;
+      for (let rows = 0; rows < p.width / 15; rows++) {
+        for (let cols = 0; cols < p.height / 15; cols++) {
+          const centerX = rows * horizontalGap + horizontalGap;
+          const centerY = cols * verticalGap + verticalGap;
 
-        const deltaX = centerX - p.mouseX;
-        const deltaY = centerY - p.mouseY;
+          const deltaX = centerX - p.mouseX;
+          const deltaY = centerY - p.mouseY;
 
-        const distance = p.dist(centerX, centerY, p.mouseX, p.mouseY);
+          const distance = p.dist(centerX, centerY, p.mouseX, p.mouseY);
 
-        const hypRatio = radius / distance;
+          const hypRatio = radius / distance;
 
-        const xRatio = deltaX * hypRatio;
-        const yRatio = deltaY * hypRatio;
+          const xRatio = deltaX * hypRatio;
+          const yRatio = deltaY * hypRatio;
 
-        const dampenBy = p.constrain(p.map(distance, 300, 0, 1, 0), 0, 1);
-        const p1 = {
-          x: centerX - xRatio * dampenBy,
-          y: centerY - yRatio * dampenBy,
-        };
-        const p2 = {
-          x: centerX + xRatio * dampenBy,
-          y: centerY + yRatio * dampenBy,
-        };
-        p.line(p1.x, p1.y, p2.x, p2.y);
+          const dampenBy = p.constrain(p.map(distance, 300, 0, 1, 0), 0, 1);
+          const p1 = {
+            x: centerX - xRatio * dampenBy,
+            y: centerY - yRatio * dampenBy,
+          };
+          const p2 = {
+            x: centerX + xRatio * dampenBy,
+            y: centerY + yRatio * dampenBy,
+          };
+          p.line(p1.x, p1.y, p2.x, p2.y);
+        }
       }
-    }
-  };
-});
+    };
+  }
+);

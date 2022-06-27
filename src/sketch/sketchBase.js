@@ -1,7 +1,21 @@
 export default class SketchBase {
-  constructor(title, description, Sketch) {
+  constructor(title, interaction, Sketch) {
     this.title = title;
-    this.description = description;
     this.Sketch = Sketch;
+    this.interaction = interaction;
   }
 }
+
+export const interactionMove = {
+  type: "move",
+  isInteractive: true,
+};
+
+export const interactionPressed = {
+  type: "press",
+  isInteractive: true,
+};
+
+export const nonInteraction = {
+  isInteractive: false,
+};
