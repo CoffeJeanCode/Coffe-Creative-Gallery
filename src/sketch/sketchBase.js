@@ -16,6 +16,10 @@ export const interactionPressed = {
   isInteractive: true,
 };
 
+export const hoverInteraction = {
+  type: "hover",
+  isInteractive: true,
+};
 export const nonInteraction = {
   isInteractive: false,
 };

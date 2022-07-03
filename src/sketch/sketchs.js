@@ -1,7 +1,7 @@
 import SketchBase, {
   interactionMove,
   interactionPressed,
-  nonInteraction,
+  hoverInteraction,
 } from "./sketchBase";
 
 export const Sketch1 = new SketchBase(
@@ -11,6 +11,7 @@ export const Sketch1 = new SketchBase(
     let canvas;
     p.setup = () => {
       canvas = p.createCanvas(size.width, size.height);
+      p.noLoop();
       canvas.mouseOver(() => p.loop());
       canvas.mouseOut(() => p.noLoop());
     };
@@ -39,6 +40,7 @@ export const Sketch2 = new SketchBase(
 
     p.setup = () => {
       canvas = p.createCanvas(size.width, size.height);
+      p.noLoop();
       canvas.mouseOver(() => p.loop());
       canvas.mouseOut(() => p.noLoop());
     };
@@ -66,6 +68,7 @@ export const Sketch3 = new SketchBase(
 
     p.setup = () => {
       canvas = p.createCanvas(size.width, size.height);
+      p.noLoop();
       canvas.mouseOver(() => p.loop());
       canvas.mouseOut(() => p.noLoop());
       p.colorMode("hsb", 360, 100, 100);
@@ -73,11 +76,14 @@ export const Sketch3 = new SketchBase(
 
     p.draw = () => {
       p.background(0);
+      const clientX = p.map(p.mouseX, 0, 360, 0, p.width);
+      const clientY = p.map(p.mouseY, 0, 360, 0, p.height);
+      const color = clientX + clientY;
       for (let x = 20; x <= p.width; x += p.width / 5) {
         for (let y = 20; y <= p.height; y += p.height / 5) {
           p.noFill();
           p.noStroke();
-          p.fill(p.mouseX + p.mouseY, 100, 100);
+          p.fill(color, 100, 100);
           p.square(x, y, 20);
         }
       }
@@ -95,6 +101,7 @@ export const Sketch4 = new SketchBase(
 
     p.setup = () => {
       canvas = p.createCanvas(size.width, size.height);
+      p.noLoop();
       canvas.mouseOver(() => p.loop());
       canvas.mouseOut(() => p.noLoop());
       p.angleMode(p.DEGREES);
@@ -134,7 +141,7 @@ export const Sketch4 = new SketchBase(
 
 export const Sketch5 = new SketchBase(
   "Terrain Generator",
-  nonInteraction,
+  hoverInteraction,
   (size) => (p) => {
     let cols, rows;
     let scl = 40;
@@ -144,9 +151,12 @@ export const Sketch5 = new SketchBase(
     let flying = 0;
 
     let terrain = [];
-
+    let canvas;
     p.setup = () => {
-      p.createCanvas(size.width, size.height, p.WEBGL);
+      canvas = p.createCanvas(size.width, size.height, p.WEBGL);
+      p.noLoop();
+      canvas.mouseOver(() => p.loop());
+      canvas.mouseOut(() => p.noLoop());
       cols = w / scl;
       rows = h / scl;
 
@@ -196,6 +206,7 @@ export const Sketch6 = new SketchBase(
     let canvas;
     p.setup = () => {
       canvas = p.createCanvas(size.width, size.height);
+      p.noLoop();
       canvas.mouseOver(() => p.loop());
       canvas.mouseOut(() => p.noLoop());
     };
@@ -238,6 +249,78 @@ export const Sketch6 = new SketchBase(
           };
           p.line(p1.x, p1.y, p2.x, p2.y);
         }
+      }
+    };
+  }
+);
+
+export const Sketch7 = new SketchBase(
+  "Node Garden",
+  interactionPressed,
+  (size) => (p) => {
+    const nodes = [],
+      MAX_DIST = 50;
+
+    p.setup = () => {
+      p.createCanvas(size.width, size.height);
+
+      for (let i = 0; i < 60; i++) {
+        nodes.push({
+          x: p.random(p.width),
+          y: p.random(p.height),
+          vX: p.random() * 2 - 1,
+          vY: p.random() * 2 - 1,
+        });
+      }
+    };
+
+    p.draw = () => {
+      p.background(0);
+
+      p.stroke(255);
+
+      for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
+
+        node.x += node.vX;
+        node.y += node.vY;
+
+        if (node.x < 0 || node.x > p.width) {
+          node.x = p.width / 2;
+        }
+
+        if (node.y < 0 || node.y > p.height) {
+          node.y = p.height / 2;
+        }
+
+        p.ellipse(node.x, node.y, 2);
+      }
+
+      for (let i = 0; i < nodes.length; i++) {
+        const nodeA = nodes[i];
+
+        for (let j = 0; j < nodes.length; j++) {
+          const nodeB = nodes[j];
+          const distAB = p.dist(nodeA.x, nodeA.y, nodeB.x, nodeB.y);
+
+          if (distAB < MAX_DIST) {
+            p.strokeWeight(1 - distAB / MAX_DIST);
+            p.line(nodeA.x, nodeA.y, nodeB.x, nodeB.y);
+          }
+        }
+      }
+    };
+
+    p.mousePressed = () => {
+      nodes.push({
+        x: p.mouseX,
+        y: p.mouseY,
+        vX: p.random() * 2 - 1,
+        vY: p.random() * 2 - 1,
+      });
+
+      if (nodes.length > 120) {
+        nodes.slice(1);
       }
     };
   }
