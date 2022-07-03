@@ -6,6 +6,7 @@ import {
   Sketch5,
   Sketch6,
   Sketch7,
+  Sketch8,
 } from "./sketchs";
 
 export const Sketchs = [
@@ -16,4 +17,5 @@ export const Sketchs = [
   Sketch5,
   Sketch6,
   Sketch7,
+  Sketch8,
 ];
