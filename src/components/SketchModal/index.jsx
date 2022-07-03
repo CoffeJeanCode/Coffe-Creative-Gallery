@@ -10,7 +10,7 @@ const SketchModal = ({ sketch, isOpen, toggleModal }) => {
         <CloseButtonStyled onClick={toggleModal}>
           <CloseIcon />
         </CloseButtonStyled>
-        <SketchItem sketch={sketch.Sketch} size={{ width: 700, height: 700 }} />
+        <SketchItem sketch={sketch.Sketch} size={{ width: window.innerWidth - 100, height: window.innerHeight - 100 }} />
         <SketchModalBackgroundContainer onClick={toggleModal} />
       </SketchModalContainerStyled>
     );
