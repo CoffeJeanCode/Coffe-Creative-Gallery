@@ -4,11 +4,14 @@ import { useEffect, useRef } from "react";
 
 const SketchObject = ({ sketch, size }) => {
   const parentRef = useRef();
+  const canvasRef = useRef();
 
   useEffect(() => {
-    new p5(sketch(size), parentRef.current);
+    canvasRef.current = new p5(sketch(size), parentRef.current);
+
     return () => {
       parentRef.current = null;
+      canvasRef.current = null;
     };
   }, []);
 
