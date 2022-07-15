@@ -17,6 +17,7 @@ export const Sketch9 = new SketchBase(
 
     p.draw = () => {
       p.background(0);
+      p.strokeWeight(0.5);
       let total = 5;
       let count = 0;
       let attempts = 0;
@@ -45,7 +46,7 @@ export const Sketch9 = new SketchBase(
                 let d = p.dist(circle.x, circle.y, other.x, other.y);
                 let distance = circle.r + other.r;
 
-                if (d - 2 < distance) {
+                if (d - 3.5 < distance) {
                   circle.growing = false;
                   break;
                 }
