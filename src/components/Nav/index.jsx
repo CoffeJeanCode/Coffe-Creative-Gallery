@@ -6,10 +6,7 @@ const Nav = () => {
     <NavStyled>
       <TitleStyled>Coffe Creative Gallery</TitleStyled>
       <NavLinksStyled>
-        <NavLinkStyled
-          href="https://coffejeancode.vercel.app/home"
-          target="_blank"
-        >
+        <NavLinkStyled href="https://coffejeancode.vercel.app/" target="_blank">
           About
         </NavLinkStyled>
         <NavLinkStyled href="https://github.com/coffejeancode" target="_blank">
