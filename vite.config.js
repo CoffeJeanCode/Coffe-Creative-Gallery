@@ -8,4 +8,11 @@ export default defineConfig({
       jsxRuntime: "automtic",
     }),
   ],
+  server: {
+    host: true,
+    port: 3000,
+    watch: {
+      usePolling: true,
+    },
+  },
 });
