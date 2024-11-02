@@ -1,132 +1,163 @@
 import SketchBase, { hoverInteraction } from "../../sketchBase";
 
 export const Sketch11 = new SketchBase(
-  "Gradient Generator",
+  "Lights",
   hoverInteraction,
   (size) => (p) => {
     let canvas;
-    let colors = [];
     const particles = [];
-    const MIN_RADIUS = 15;
-    const MAX_RADIUS = 30;
+    const MIN_RADIUS = 50;
+    const MAX_RADIUS = 70;
     const PALETTE = ["#264653", "#2a9d8f", "#e9c46a", "#f4a261", "#e76f51"];
+    const NUM_PARTICLES = 15;
 
-    let curColor = 0;
-    let graphic, graphicCtx;
+    let buffer; // p5.Graphics buffer
+    let isActive = false;
+
+    // Pre-procesa los colores
+    const processedColors = PALETTE.map((color) => {
+      const [r, g, b] = p.color(color).levels;
+      return { r, g, b };
+    });
+
+    class Particle {
+      constructor() {
+        this.reset();
+        this.angleStep = p.random(0.02, 0.04);
+        this.radiusVariation = p.random(3, 7);
+      }
+
+      reset() {
+        this.x = p.random(p.width);
+        this.y = p.random(p.height);
+        this.radius = p.random(MIN_RADIUS, MAX_RADIUS);
+        this.vx = p.random(-1.5, 1.5);
+        this.vy = p.random(-1.5, 1.5);
+        this.angle = p.random(p.TWO_PI);
+        this.rgb = p.random(processedColors);
+        return this;
+      }
+
+      update() {
+        // Actualización de posición
+        this.x += this.vx;
+        this.y += this.vy;
+        this.angle += this.angleStep;
+
+        // Manejo de bordes mejorado
+        if (this.x < this.radius) {
+          this.x = this.radius;
+          this.vx *= -1;
+        } else if (this.x > p.width - this.radius) {
+          this.x = p.width - this.radius;
+          this.vx *= -1;
+        }
+
+        if (this.y < this.radius) {
+          this.y = this.radius;
+          this.vy *= -1;
+        } else if (this.y > p.height - this.radius) {
+          this.y = p.height - this.radius;
+          this.vy *= -1;
+        }
+
+        return this.radius + Math.sin(this.angle) * this.radiusVariation;
+      }
+
+      draw(graphics, radius) {
+        const ctx = graphics.drawingContext;
+
+        // Crea y aplica el gradiente
+        const gradient = ctx.createRadialGradient(
+          this.x,
+          this.y,
+          radius * 0.1,
+          this.x,
+          this.y,
+          radius
+        );
+
+        gradient.addColorStop(
+          0,
+          `rgba(${this.rgb.r},${this.rgb.g},${this.rgb.b},0.8)`
+        );
+        gradient.addColorStop(
+          1,
+          `rgba(${this.rgb.r},${this.rgb.g},${this.rgb.b},0)`
+        );
+
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, radius, 0, p.TWO_PI);
+        ctx.fill();
+      }
+    }
 
     p.setup = () => {
+      // Configuración inicial
       canvas = p.createCanvas(size.width, size.height);
-      p.noLoop();
-      canvas.mouseOver(() => p.loop());
-      canvas.mouseOut(() => p.noLoop());
+      p.frameRate(60);
 
-      graphic = p.createGraphics(p.width, p.height);
-      graphicCtx = graphic.canvas.getContext("2d");
-      colors = createPallete();
+      // Crea el buffer de p5
+      buffer = p.createGraphics(p.width, p.height);
 
-      for (let i = 0; i < 15; i++) {
-        const particle = new Particle(
-          p.random(p.width + MIN_RADIUS),
-          p.random(p.height + MIN_RADIUS),
-          (MAX_RADIUS - MIN_RADIUS) * MIN_RADIUS,
-          colors[curColor]
-        );
-        particles.push(particle);
+      // Configura el blend mode del buffer
+      buffer.drawingContext.globalCompositeOperation = "lighter";
 
-        curColor++;
-        if (curColor >= colors.length) {
-          curColor = 0;
-        }
+      // Inicializa partículas
+      for (let i = 0; i < NUM_PARTICLES; i++) {
+        particles.push(new Particle());
       }
+
+      // Eventos del mouse
+      canvas.mouseOver(() => {
+        isActive = true;
+        p.loop();
+      });
+
+      canvas.mouseOut(() => {
+        isActive = false;
+        p.noLoop();
+      });
+
+      p.noLoop();
     };
 
     p.draw = () => {
-      graphicCtx.clearRect(0, 0, p.width, p.height);
-      graphicCtx.globalCompositeOperation = "saturation";
+      if (!isActive) return;
 
-      p.noStroke();
+      // Limpia los canvas
+      p.clear();
+      buffer.clear();
+
+      // Actualiza y dibuja partículas
+      for (const particle of particles) {
+        const radius = particle.update();
+        particle.draw(buffer, radius);
+      }
+
+      // Dibuja el fondo
       p.background(0);
 
-      for (const particle of particles) {
-        particle.animate();
-      }
-
-      p.image(graphic, 0, 0);
+      // Aplica el buffer con blend mode
+      p.push();
+      p.blendMode(p.SCREEN);
+      p.image(buffer, 0, 0);
+      p.pop();
     };
 
-    const createPallete = () =>
-      PALETTE.sort(() => (p.random() > 0.5 ? 1 : -1)).map((c) => {
-        const [r, g, b] = p.color(c).levels;
-        return { r, g, b };
-      });
+    // Manejo de resize
+    p.windowResized = () => {
+      if (size.width !== p.width || size.height !== p.height) {
+        p.resizeCanvas(size.width, size.height);
 
-    class Particle {
-      constructor(x, y, radius, rgb) {
-        this.x = x;
-        this.y = y;
-        this.radius = p.abs(radius);
-        this.rgb = rgb;
+        // Recrea el buffer con el nuevo tamaño
+        buffer = p.createGraphics(size.width, size.height);
+        buffer.drawingContext.globalCompositeOperation = "lighter";
 
-        this.vx = p.random(-2, 4);
-        this.vy = p.random(-2, 4);
-
-        this.sinValue = p.random();
+        // Reposiciona las partículas
+        particles.forEach((particle) => particle.reset());
       }
-
-      animate() {
-        this.sinValue += 0.01;
-
-        this.radius += p.sin(this.sinValue);
-
-        this.x += this.vx;
-        this.y += this.vy;
-
-        if (this.x < 0) {
-          this.vx *= -1;
-          this.x -= 5;
-        } else if (this.x > p.width) {
-          this.vx *= -1;
-          this.x += 5;
-        }
-
-        if (this.y < 0) {
-          this.vy *= -1;
-          this.y += 5;
-        } else if (this.y > p.height) {
-          this.vy *= -1;
-          this.y -= 5;
-        }
-
-        const g = graphicCtx.createRadialGradient(
-          this.x,
-          this.y,
-          this.radius * 0.001,
-          this.x,
-          this.y,
-          this.radius
-        );
-
-        g.addColorStop(
-          0,
-          `rgba(${this.rgb.r}, ${this.rgb.g}, ${this.rgb.b}, 1)`
-        );
-        g.addColorStop(
-          1,
-          `rgba(${this.rgb.r}, ${this.rgb.g}, ${this.rgb.b}, 0)`
-        );
-        graphicCtx.fillStyle = g;
-
-        graphicCtx.arc(
-          this.x,
-          this.y,
-          this.radius,
-          this.radius,
-          0,
-          p.TAU,
-          false
-        );
-        graphicCtx.fill();
-      }
-    }
+    };
   }
 );
