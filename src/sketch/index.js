@@ -1,6 +1,7 @@
 import { Sketch1 } from "./sketchs/sketch1";
 import { Sketch10 } from "./sketchs/sketch10";
 import { Sketch11 } from "./sketchs/sketch11";
+import { Sketch12 } from "./sketchs/sketch12";
 import { Sketch2 } from "./sketchs/sketch2";
 import { Sketch3 } from "./sketchs/sketch3";
 import { Sketch4 } from "./sketchs/sketch4";
@@ -22,4 +23,5 @@ export const Sketchs = [
   Sketch9,
   Sketch10,
   Sketch11,
+  Sketch12,
 ];
