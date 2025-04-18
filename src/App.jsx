@@ -44,7 +44,7 @@ const ContainerStyled = styled.main`
 
 const MainContentStyled = styled.div`
   grid-column: 2;
-  margin: 2rem 1rem;
+  padding: 2rem 1rem;
 `;
 
 const AppContainerStyled = styled.div`
@@ -54,6 +54,7 @@ const AppContainerStyled = styled.div`
     #ffffff 0.35000000000000003px
   );
   overflow: hidden;
+  scroll-snap-type: y mandatory;
   background-size: 7px 7px;
   * {
     font-family: Arial, Helvetica, sans-serif;

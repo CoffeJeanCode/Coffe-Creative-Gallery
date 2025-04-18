@@ -24,14 +24,14 @@ const SketchItem = ({ sketch, size, interaction }) => {
         isOpen={isOpenModal}
         toggleModal={toggleModal}
       ></SketchModal>
-      <SketchButtoStyled onClick={toggleModal}>
+      <SketchButtonStyled onClick={toggleModal}>
         View Fullscreen
-      </SketchButtoStyled>
+      </SketchButtonStyled>
     </SketchItemContainerStyled>
   );
 };
 
-const SketchButtoStyled = styled.button`
+const SketchButtonStyled = styled.button`
   border: none;
   padding: 1rem 2rem;
   border-radius: 10px;
@@ -43,10 +43,12 @@ const SketchButtoStyled = styled.button`
     background: #3a3a3a;
   }
 `;
+
 const SketchItemContainerStyled = styled.li`
   text-align: center;
-  position: ${({ isOpenModal }) => (!isOpenModal ? "block" : "block")};
+  scroll-snap-align: start;
 `;
+
 const SketchMouseUsedStyled = styled.div`
   border-radius: 10px;
   margin: 0 0.5rem;
