@@ -6,8 +6,10 @@ export const Sketch2 = new SketchBase(
   (size) => (p) => {
     const path = [];
     let canvas;
-    const colors = ["#FF5733", "#33FF57", "#3357FF", "#F0FF33", "#FF33F6"]; // Paleta de colores
-
+    const palette1 = ["#FF5733", "#FFC300", "#FF4500"];
+    const palette2 = ["#33FF57", "#3357FF", "#00FFFF"];
+    const palette3 = ["#F0FF33", "#FFB6C1", "#ADD8E6"];
+    const colors = p.random([palette1, palette2, palette3]);
     p.setup = () => {
       canvas = p.createCanvas(size.width, size.height);
       p.noLoop();
@@ -17,10 +19,9 @@ export const Sketch2 = new SketchBase(
     };
 
     p.draw = () => {
-      p.background(0); // Fondo negro
+      p.background(0);
 
-      // Dibuja líneas de guía
-      p.stroke(255, 50); // Color claro y translúcido
+      p.stroke(255, 50);
       p.line(p.mouseX, 0, p.mouseX, p.height);
       p.line(0, p.mouseY, p.width, p.mouseY);
 
@@ -28,10 +29,9 @@ export const Sketch2 = new SketchBase(
         path.push(p.mouseX, p.mouseY);
       }
 
-      // Dibuja líneas con colores alternos
       for (let i = 0; i < path.length; i += 2) {
-        const colorIndex = (i / 2) % colors.length; // Alterna el índice del color
-        p.stroke(colors[colorIndex]); // Asigna el color
+        const colorIndex = (i / 2) % colors.length;
+        p.stroke(colors[colorIndex]);
         p.line(path[i], p.mouseY, p.mouseX, path[i + 1]);
       }
     };

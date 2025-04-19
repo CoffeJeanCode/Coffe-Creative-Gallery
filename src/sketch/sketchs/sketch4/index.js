@@ -4,8 +4,8 @@ export const Sketch4 = new SketchBase(
   "Kaleiospe",
   interactionPressed,
   (size) => (p) => {
-    let symetry = 12;
-    let angle = 360 / symetry;
+    let symetry;
+    let angle;
     let canvas;
 
     p.setup = () => {
@@ -17,6 +17,9 @@ export const Sketch4 = new SketchBase(
       p.background(0);
       p.translate(p.width / 2, p.height / 2);
       p.stroke(255);
+
+      symetry = p.int(p.random(12, 24));
+      angle = 360 / symetry;
 
       for (let i = 0; i < symetry; i++) {
         p.rotate(angle);
@@ -38,7 +41,7 @@ export const Sketch4 = new SketchBase(
         for (let i = 0; i < symetry; i++) {
           p.rotate(angle);
           let d = p.dist(mx, my, pmx, pmy),
-            sw = p.map(d, 0, 10, 10, 1);
+            sw = p.map(d, 0, 10, 5, 0.5);
 
           p.strokeWeight(sw);
           p.line(mx, my, pmx, pmy);

@@ -72,29 +72,72 @@ export const Sketch9 = new SketchBase(
           break;
         }
       }
+
       if (valid) {
-        return new Circle(x, y);
+        const types = ["soft", "bold", "hollow", "filled", "vapor", "ghost"];
+        const type = p.random(types);
+        return new Circle(x, y, type);
       } else {
         return null;
       }
     }
 
     class Circle {
-      constructor(x, y) {
+      constructor(x, y, type = "default") {
         this.x = x;
         this.y = y;
-        this.r = 1;
+        this.r = 0.01;
         this.growing = true;
+        this.type = type;
       }
 
       grow() {
-        if (this.growing) this.r += 0.5;
+        if (this.growing) {
+          const growthSpeed = 1.5;
+          this.r += growthSpeed;
+        }
       }
 
       show() {
-        p.stroke(255);
-        p.noFill();
+        switch (this.type) {
+          case "soft":
+            p.noFill();
+            p.stroke(255, 80);
+            p.strokeWeight(1);
+            break;
+          case "bold":
+            p.noFill();
+            p.stroke(255);
+            p.strokeWeight(3);
+            break;
+          case "hollow":
+            p.noFill();
+            p.stroke(200);
+            p.strokeWeight(0.5);
+            break;
+          case "filled":
+            p.noStroke();
+            p.fill(255, 100);
+            break;
+          case "vapor":
+            p.noFill();
+            p.stroke(255, 50);
+            p.strokeWeight(5);
+            break;
+          case "ghost":
+            p.noFill();
+            p.stroke(255, 25);
+            p.strokeWeight(1);
+            break;
+          default:
+            p.noFill();
+            p.stroke(255);
+            p.strokeWeight(0.5);
+        }
+
         p.ellipse(this.x, this.y, this.r * 2);
+
+        p.drawingContext.setLineDash([]); // reset
       }
 
       edges() {

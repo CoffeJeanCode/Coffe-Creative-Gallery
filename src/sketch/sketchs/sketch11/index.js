@@ -9,7 +9,7 @@ export const Sketch11 = new SketchBase(
     const MIN_RADIUS = 50;
     const MAX_RADIUS = 70;
     const PALETTE = ["#264653", "#2a9d8f", "#e9c46a", "#f4a261", "#e76f51"];
-    const NUM_PARTICLES = 15;
+    const NUM_PARTICLES = p.random(10, 20);
 
     let buffer; // p5.Graphics buffer
     let isActive = false;
@@ -66,28 +66,8 @@ export const Sketch11 = new SketchBase(
 
       draw(graphics, radius) {
         const ctx = graphics.drawingContext;
-
-        // Crea y aplica el gradiente
-        const gradient = ctx.createRadialGradient(
-          this.x,
-          this.y,
-          radius * 0.1,
-          this.x,
-          this.y,
-          radius
-        );
-
-        gradient.addColorStop(
-          0,
-          `rgba(${this.rgb.r},${this.rgb.g},${this.rgb.b},0.8)`
-        );
-        gradient.addColorStop(
-          1,
-          `rgba(${this.rgb.r},${this.rgb.g},${this.rgb.b},0)`
-        );
-
-        ctx.fillStyle = gradient;
         ctx.beginPath();
+        ctx.fillStyle = `rgba(${this.rgb.r}, ${this.rgb.g}, ${this.rgb.b}, 1)`;
         ctx.arc(this.x, this.y, radius, 0, p.TWO_PI);
         ctx.fill();
       }
@@ -100,9 +80,19 @@ export const Sketch11 = new SketchBase(
 
       // Crea el buffer de p5
       buffer = p.createGraphics(p.width, p.height);
+      buffer.drawingContext.filter = "blur(12px)";
+      buffer.drawingContext.globalCompositeOperation = "source-over";
 
-      // Configura el blend mode del buffer
-      buffer.drawingContext.globalCompositeOperation = "lighter";
+      const mainCtx = buffer.drawingContext;
+      mainCtx.save();
+
+      // boost del alpha (tipo colorMatrix con 25 -10)
+      mainCtx.globalAlpha = 1;
+      mainCtx.globalCompositeOperation = "source-over";
+      mainCtx.filter = "brightness(1.5) contrast(2)";
+
+      mainCtx.drawImage(buffer.elt, 0, 0);
+      mainCtx.restore();
 
       // Inicializa partículas
       for (let i = 0; i < NUM_PARTICLES; i++) {
@@ -138,11 +128,10 @@ export const Sketch11 = new SketchBase(
 
       // Dibuja el fondo
       p.background(0);
-
-      // Aplica el buffer con blend mode
       p.push();
       p.blendMode(p.SCREEN);
       p.image(buffer, 0, 0);
+      p.blendMode(p.BLEND);
       p.pop();
     };
 

@@ -21,6 +21,7 @@ export const Sketch10 = new SketchBase(
 
     p.draw = () => {
       p.stroke(255 - x, y * 2, x + y);
+      p.strokeWeight(p.random(0.5, 10));
 
       if (p.random(1) < 0.5) {
         p.line(x, y, x + spacing, y + spacing);

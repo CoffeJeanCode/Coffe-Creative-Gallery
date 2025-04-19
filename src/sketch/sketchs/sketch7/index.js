@@ -68,7 +68,7 @@ export const Sketch7 = new SketchBase(
         vY: p.random() * 2 - 1,
       });
 
-      if (nodes.length > 120) {
+      if (nodes.length > 100) {
         nodes.slice(1);
       }
     };

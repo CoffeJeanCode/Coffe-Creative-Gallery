@@ -14,7 +14,7 @@ export const Sketch12 = new SketchBase(
       [255, 145, 0], // Naranja brillante
     ];
     const dotPatterns = [];
-    const GRID_SIZE = 10;
+    const GRID_SIZE = 5;
 
     let isActive = false;
     let canvas;
@@ -56,13 +56,10 @@ export const Sketch12 = new SketchBase(
     p.draw = () => {
       p.background(0);
 
-      // Dibuja el patrón de fondo tipo pop art
-      drawBackground();
-
       // Actualiza y dibuja las ondas
       for (let i = waves.length - 1; i >= 0; i--) {
         let wave = waves[i];
-        wave.radius += 2; // Aumenta el radio
+        wave.radius += 3; // Aumenta el radio
 
         if (wave.radius > p.width * 1.2) {
           waves.splice(i, 1);
@@ -72,23 +69,6 @@ export const Sketch12 = new SketchBase(
         drawPopArtWave(wave, i);
       }
     };
-
-    function drawBackground() {
-      for (let x = 0; x < p.width; x += GRID_SIZE * 2) {
-        for (let y = 0; y < p.height; y += GRID_SIZE * 2) {
-          p.fill(230);
-          p.rect(x, y, GRID_SIZE * 2, GRID_SIZE * 2);
-
-          // Agrega puntos pequeños de fondo
-          p.fill(200);
-          for (let dx = GRID_SIZE / 2; dx < GRID_SIZE * 2; dx += GRID_SIZE) {
-            for (let dy = GRID_SIZE / 2; dy < GRID_SIZE * 2; dy += GRID_SIZE) {
-              p.circle(x + dx, y + dy, 2);
-            }
-          }
-        }
-      }
-    }
 
     function drawPopArtWave(wave, index) {
       let colorIndex = index % colors.length;
@@ -158,12 +138,10 @@ export const Sketch12 = new SketchBase(
         radius: 0,
       });
 
-      // Limita el número de ondas
-      if (waves.length > 8) {
+      if (waves.length > 15) {
         waves.splice(0, 1);
       }
 
-      // Actualiza algunos patrones de puntos aleatoriamente
       dotPatterns[p.floor(p.random(dotPatterns.length))] = createDotPattern();
     };
   }
